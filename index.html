@@ -85,7 +85,6 @@
       z-index: 100;
       box-shadow: 0 8px 24px rgba(13, 107, 74, 0.2);
       border-bottom: 3px solid #b8902e;
-      overflow: hidden;
     }
     .app-header::before {
       content: '';
@@ -98,6 +97,7 @@
         repeating-linear-gradient(-45deg, rgba(212, 175, 106, 0.16) 0 1px, transparent 1px 26px);
     }
     .header-top, #header-info-bar, #sync-bar { position: relative; z-index: 1; }
+    .header-top { z-index: 5; }
     .header-top {
       display: flex;
       align-items: center;
@@ -574,6 +574,83 @@
       font-size: 12px; color: var(--text-2); line-height: 1.7; background: var(--surface-2);
       padding: 12px 14px; border-radius: var(--radius-xs); border-left: 4px solid var(--accent); margin-top: 10px;
     }
+
+    /* ===== DASHBOARD BERANDA ===== */
+    .dash-hero { display:flex; align-items:center; gap:14px; }
+    .dash-avatar {
+      width:54px; height:54px; border-radius:50%; flex-shrink:0;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color:#fff; font-size:19px; font-weight:800; letter-spacing:0.5px;
+      display:flex; align-items:center; justify-content:center;
+      border:3px solid var(--accent-light); box-shadow: var(--shadow);
+    }
+    .dash-hero-main { flex:1; min-width:0; }
+    .dash-hero-label { font-size:11px; font-weight:600; color:var(--text-3); }
+    .dash-name-input {
+      width:100%; border:none; border-bottom:1.5px dashed var(--border); background:transparent;
+      font-family:inherit; font-size:18px; font-weight:800; color:var(--text);
+      padding:2px 0 3px; outline:none; text-overflow:ellipsis;
+    }
+    .dash-name-input::placeholder { color:var(--text-3); font-weight:600; font-size:15px; }
+    .dash-name-input:focus { border-bottom-color: var(--accent); }
+    .dash-summary { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin:10px 12px; }
+    .dash-stat {
+      background:var(--surface); border-radius:var(--radius); padding:12px 8px; text-align:center;
+      border:1px solid rgba(13, 107, 74, 0.08); box-shadow: var(--shadow-sm);
+    }
+    .dash-stat .val { font-size:22px; font-weight:800; color:var(--primary); line-height:1.1; display:block; }
+    .dash-stat .lbl { font-size:11px; color:var(--text-2); font-weight:600; margin-top:3px; display:block; }
+    .ampu-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+    .ampu-head .card-title { margin-bottom:0; }
+    .ampu-mapel { border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:10px; overflow:hidden; }
+    .ampu-mapel:last-child { margin-bottom:0; }
+    .ampu-mapel-head {
+      background:var(--surface-2); padding:9px 12px; border-bottom:1px solid var(--border);
+      display:flex; justify-content:space-between; align-items:center; gap:8px;
+      font-size:13px; font-weight:800; color:var(--primary-dark);
+    }
+    .ampu-mapel-head small { font-size:11px; font-weight:600; color:var(--text-3); white-space:nowrap; }
+    .ampu-kelas-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:8px; padding:10px; }
+    .ampu-kelas {
+      position:relative; border:1.5px solid var(--border); border-radius:var(--radius-xs);
+      padding:10px 12px; cursor:pointer; background:var(--surface); transition:border-color .2s, box-shadow .2s;
+    }
+    .ampu-kelas:hover { border-color:var(--accent); box-shadow:var(--shadow); }
+    .ampu-kelas.aktif { border-color:var(--primary); background:var(--surface-2); }
+    .ampu-kelas-title { font-size:13px; font-weight:800; padding-right:24px; }
+    .ampu-kelas-sub { font-size:11px; color:var(--text-3); margin-bottom:4px; }
+    .ampu-bar-row { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-2); margin-top:5px; }
+    .ampu-bar-row .lb { width:42px; flex-shrink:0; font-weight:700; }
+    .ampu-bar-row .nm { width:48px; flex-shrink:0; text-align:right; font-weight:700; }
+    .ampu-bar { flex:1; height:6px; background:var(--surface-2); border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+    .ampu-bar > i { display:block; height:100%; background:linear-gradient(90deg, var(--primary), var(--success-light)); }
+    .ampu-remove {
+      position:absolute; top:6px; right:6px; width:22px; height:22px; border-radius:50%;
+      border:none; background:transparent; color:var(--text-3); font-size:13px; cursor:pointer; line-height:1;
+    }
+    .ampu-remove:hover { background:rgba(239, 68, 68, 0.12); color:var(--danger); }
+    .ampu-empty { font-size:13px; color:var(--text-2); line-height:1.7; text-align:center; padding:14px 8px; }
+
+    /* ===== MENU DROPDOWN ===== */
+    .menu-wrap { position: relative; }
+    #menu-trigger { display:flex; align-items:center; gap:6px; font-size:12px; padding:7px 12px; }
+    #menu-trigger .caret { font-size:9px; transition: transform .2s; }
+    #menu-trigger[aria-expanded="true"] .caret { transform: rotate(180deg); }
+    .menu-dropdown {
+      display:none; position:absolute; right:0; top:calc(100% + 8px); min-width:190px;
+      background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);
+      box-shadow:var(--shadow-lg); padding:6px; z-index:200;
+    }
+    .menu-dropdown.open { display:block; }
+    .menu-item {
+      display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+      background:transparent; border:none; border-radius:var(--radius-xs);
+      padding:10px 12px; font-family:inherit; font-size:13px; font-weight:600;
+      color:var(--text); cursor:pointer;
+    }
+    .menu-item:hover { background:var(--surface-2); }
+    .menu-item.active { background:rgba(13, 107, 74, 0.12); color:var(--primary-dark); font-weight:800; }
+    .menu-item .mi-icon { width:20px; text-align:center; }
   </style>
 </head>
 <body>
@@ -588,11 +665,17 @@
           <p>Pesantren Al Ma'tuq</p>
         </div>
       </div>
-      <div class="header-actions">
-        <button class="btn-header" id="btn-tab-smt1" onclick="switchPage('smt1')">🗓️ Smt 1</button>
-        <button class="btn-header active" id="btn-tab-input" onclick="switchPage('input')">📝 Smt 2</button>
-        <button class="btn-header" id="btn-tab-siswa" onclick="switchPage('siswa')">👥 Siswa</button>
-        <button class="btn-header" id="btn-tab-settings" onclick="switchPage('settings')">⚙️ Pengaturan</button>
+      <div class="header-actions menu-wrap">
+        <button class="btn-header" id="menu-trigger" aria-haspopup="true" aria-expanded="false" onclick="toggleMenu(event)">
+          <span id="menu-label">🏠 Beranda</span><span class="caret">▼</span>
+        </button>
+        <div class="menu-dropdown" id="menu-dropdown" role="menu">
+          <button class="menu-item active" id="btn-tab-dashboard" onclick="switchPage('dashboard')"><span class="mi-icon">🏠</span>Beranda</button>
+          <button class="menu-item" id="btn-tab-smt1" onclick="switchPage('smt1')"><span class="mi-icon">🗓️</span>Nilai Smt 1</button>
+          <button class="menu-item" id="btn-tab-input" onclick="switchPage('input')"><span class="mi-icon">📝</span>Nilai Smt 2</button>
+          <button class="menu-item" id="btn-tab-siswa" onclick="switchPage('siswa')"><span class="mi-icon">👥</span>Siswa</button>
+          <button class="menu-item" id="btn-tab-settings" onclick="switchPage('settings')"><span class="mi-icon">⚙️</span>Pengaturan</button>
+        </div>
       </div>
     </div>
     <div class="header-meta">
@@ -609,7 +692,7 @@
   </header>
 
   <!-- ===== SELEKTOR GURU/MAPEL/KELAS (dipakai bersama tab Smt 1 & Smt 2) ===== -->
-  <div id="selector-card" class="card">
+  <div id="selector-card" class="card" style="display:none;">
     <div class="form-row cols-3">
       <div class="form-group">
         <label class="form-label">Nama Guru</label>
@@ -624,10 +707,41 @@
       </div>
       <div class="form-group">
         <label class="form-label">Kelas</label>
-        <select class="form-control" id="kelas" onchange="loadSiswa()">
+        <select class="form-control" id="kelas" onchange="onKelasChange()">
           <option value="">-- Pilih Kelas --</option>
         </select>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: BERANDA / DASHBOARD GURU ===== -->
+  <div id="page-dashboard" class="page active">
+    <div class="card" style="border-left: 4px solid var(--accent);">
+      <div class="dash-hero">
+        <div class="dash-avatar" id="dash-avatar">👤</div>
+        <div class="dash-hero-main">
+          <div class="dash-hero-label">Nama Guru</div>
+          <input type="text" class="dash-name-input" id="dash-guru" placeholder="Ketuk untuk mengisi nama guru"
+                 autocomplete="off" oninput="document.getElementById('guru').value = this.value; saveSesi();">
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-summary">
+      <div class="dash-stat"><span class="val" id="dash-n-mapel">0</span><span class="lbl">Mata Pelajaran</span></div>
+      <div class="dash-stat"><span class="val" id="dash-n-kelas">0</span><span class="lbl">Kelas</span></div>
+      <div class="dash-stat"><span class="val" id="dash-n-siswa">0</span><span class="lbl">Total Siswa</span></div>
+    </div>
+
+    <div class="card">
+      <div class="ampu-head">
+        <div class="card-title">
+          <div class="icon">📖</div>
+          Mapel &amp; Kelas yang Diampu
+        </div>
+        <button class="btn btn-sm btn-primary" onclick="tambahAmpu()">＋ Tambah</button>
+      </div>
+      <div id="dash-ampu-list"></div>
     </div>
   </div>
 
@@ -705,7 +819,7 @@
   </div>
 
   <!-- ===== PAGE: INPUT NILAI SEMESTER 2 ===== -->
-  <div id="page-input" class="page active">
+  <div id="page-input" class="page">
     <div id="stats-area" class="table-toolbar" style="display:none;">
       <div class="stats-row">
         <div class="stat-chip">
@@ -1195,30 +1309,68 @@
     if (el) el.textContent = msg;
   }
 
+  let syncing_ = false;
+  let sudahSinkron_ = false;
+  let pendingRender_ = false;
+
+  // True bila pengguna sedang mengetik di sel tabel nilai (jangan render ulang saat itu)
+  function isEditingTable_() {
+    const a = document.activeElement;
+    return !!(a && a.tagName === 'INPUT' && a.closest && a.closest('table'));
+  }
+
+  function refreshViews_() {
+    if (currentKelas && dbSiswa[currentKelas]) loadSiswa();
+    if (document.getElementById('page-siswa').classList.contains('active')) {
+      if (document.getElementById('manage-kelas').value) loadManageSiswa();
+    }
+    renderDashboardIfActive_();
+  }
+
+  function applySiswaUpdate_() {
+    updateDropdownKelas();
+    if (isEditingTable_()) { pendingRender_ = true; return; }
+    refreshViews_();
+  }
+
+  // Render ulang yang tertunda setelah pengguna selesai mengetik
+  document.addEventListener('focusout', () => {
+    if (!pendingRender_) return;
+    setTimeout(() => {
+      if (pendingRender_ && !isEditingTable_()) { pendingRender_ = false; refreshViews_(); }
+    }, 150);
+  });
+
   function fetchSiswaFromServer(manual) {
     if (!gasReady_()) {
       setSyncStatus('⚠️ Server belum diatur (mode offline)');
       if (manual) toast('URL server (GAS_URL) belum diatur di index.html', 'error');
       return Promise.resolve(false);
     }
-    setSyncStatus('⏳ Menyinkronkan...');
-    return fetch(window.GAS_URL + '?action=getSiswa')
+    if (syncing_) return Promise.resolve(false);
+    syncing_ = true;
+    if (manual || !sudahSinkron_) setSyncStatus('⏳ Menyinkronkan...');
+
+    // Parameter waktu + no-store: pastikan selalu ambil data terbaru, bukan dari cache
+    const url = window.GAS_URL + (window.GAS_URL.indexOf('?') >= 0 ? '&' : '?') + 'action=getSiswa&_=' + Date.now();
+    return fetch(url, { cache: 'no-store' })
       .then(r => r.json())
       .then(res => {
         if (!res.success) throw new Error(res.message || 'Gagal memuat data siswa');
-        dbSiswa = res.data || {};
-        saveSiswa(); // simpan sebagai cache offline di perangkat ini
+        const baru = res.data || {};
+        const berubah = JSON.stringify(baru) !== JSON.stringify(dbSiswa);
+        dbSiswa = baru;
+        if (berubah) saveSiswa(); // simpan sebagai cache offline di perangkat ini
+        sudahSinkron_ = true;
+        syncing_ = false;
         const now = new Date();
         setSyncStatus('✅ Tersinkron • ' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0'));
-        updateDropdownKelas();
-        if (currentKelas && dbSiswa[currentKelas]) loadSiswa();
-        if (document.getElementById('page-siswa').classList.contains('active')) {
-          if (document.getElementById('manage-kelas').value) loadManageSiswa();
-        }
+        if (berubah || manual) applySiswaUpdate_();
         if (manual) toast('Data siswa berhasil disinkron ✅', 'success');
         return true;
       })
       .catch(err => {
+        syncing_ = false;
         setSyncStatus('⚠️ Offline • memakai data tersimpan di perangkat ini');
         if (manual) toast('Gagal sinkron: ' + err.message, 'error');
         return false;
@@ -1296,6 +1448,7 @@
     if(kelas) hibKelas.textContent = '🏫 Kelas ' + kelas; else hibKelas.textContent = '';
 
     bar.style.display = (guru || mapel || kelas) ? 'flex' : 'none';
+    renderDashboardIfActive_();
     recalcTableHeight();
   }
 
@@ -1310,6 +1463,167 @@
       const scrollEl = activePage ? activePage.querySelector('.table-scroll') : null;
       if(scrollEl) scrollEl.style.height = `calc(100vh - ${offset}px)`;
     });
+  }
+
+  // ================================================================
+  // DASHBOARD: GURU, MAPEL & KELAS YANG DIAMPU
+  // Daftar pengampuan tersimpan per perangkat (localStorage) dan otomatis
+  // bertambah setiap guru memilih kombinasi mapel + kelas di tab Smt 1/Smt 2.
+  // ================================================================
+  let daftarAmpu = (function() {
+    try {
+      const p = JSON.parse(localStorage.getItem('almatuq_ampu'));
+      if (Array.isArray(p)) return p;
+    } catch(e) {}
+    return null; // null = belum pernah dibuat (akan diisi dari data nilai yang ada)
+  })();
+
+  const FIELDS_S2_ = ['rap1','nh1','nh2','nh3','nh4','nh5','nh6','nh7','nh8','sts','sas'];
+  const FIELDS_S1_ = ['h1','h2','h3','h4','h5','h6','h7','h8','sts1','sas1'];
+
+  function saveAmpu() {
+    localStorage.setItem('almatuq_ampu', JSON.stringify(daftarAmpu || []));
+  }
+
+  function escHtml_(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function adaIsi_(d, fields) {
+    return !!d && fields.some(f => d[f] !== '' && d[f] !== undefined && d[f] !== null);
+  }
+
+  function namaMapelTampil_(m) {
+    const f = subjectList.find(x => x.toUpperCase() === m);
+    return f || m;
+  }
+
+  function registerAmpu_(mapel, kelas) {
+    mapel = (mapel || '').trim().toUpperCase();
+    if (!mapel || !kelas) return;
+    if (!Array.isArray(daftarAmpu)) daftarAmpu = [];
+    if (daftarAmpu.some(a => a.mapel === mapel && a.kelas === kelas)) return;
+    daftarAmpu.push({ mapel, kelas });
+    saveAmpu();
+  }
+
+  // Data lama (sebelum ada dashboard): baca dari kunci nilai MAPEL_KELAS_NAMA yang sudah terisi
+  function seedAmpuDariNilai_() {
+    const hasil = [], seen = {};
+    const kelasList = Object.keys(dbSiswa);
+    const scan = (db, fields) => {
+      Object.keys(db).forEach(key => {
+        if (!adaIsi_(db[key], fields)) return;
+        for (const kelas of kelasList) {
+          const idx = key.indexOf('_' + kelas + '_');
+          if (idx > 0) {
+            const mapel = key.slice(0, idx);
+            const id = mapel + '|' + kelas;
+            if (mapel !== 'UMUM' && !seen[id]) { seen[id] = 1; hasil.push({ mapel, kelas }); }
+            return;
+          }
+        }
+      });
+    };
+    scan(dataNilai, FIELDS_S2_);
+    scan(dataNilaiS1, FIELDS_S1_);
+    return hasil;
+  }
+
+  function progressAmpu_(mapel, kelas) {
+    const siswa = dbSiswa[kelas] || [];
+    let s1 = 0, s2 = 0;
+    siswa.forEach(sw => {
+      const k = mapel + '_' + kelas + '_' + sw.nama;
+      if (adaIsi_(dataNilai[k], FIELDS_S2_)) s2++;
+      if (adaIsi_(dataNilaiS1[k], FIELDS_S1_)) s1++;
+    });
+    return { total: siswa.length, s1, s2 };
+  }
+
+  function inisial_(nama) {
+    const w = (nama || '').trim().split(/\s+/).filter(Boolean);
+    if (!w.length) return '👤';
+    return (w[0][0] + (w.length > 1 ? w[1][0] : '')).toUpperCase();
+  }
+
+  function renderDashboardIfActive_() {
+    const pg = document.getElementById('page-dashboard');
+    if (pg && pg.classList.contains('active')) renderDashboard();
+  }
+
+  function renderDashboard() {
+    const guru = document.getElementById('guru').value.trim();
+    const inp = document.getElementById('dash-guru');
+    if (inp && document.activeElement !== inp) inp.value = guru;
+    document.getElementById('dash-avatar').textContent = inisial_(guru);
+
+    const list = Array.isArray(daftarAmpu) ? daftarAmpu : [];
+    const mapelSet = {}, kelasSet = {};
+    list.forEach(a => { mapelSet[a.mapel] = 1; kelasSet[a.kelas] = 1; });
+    let totalSiswa = 0;
+    Object.keys(kelasSet).forEach(k => { totalSiswa += (dbSiswa[k] || []).length; });
+    document.getElementById('dash-n-mapel').textContent = Object.keys(mapelSet).length;
+    document.getElementById('dash-n-kelas').textContent = Object.keys(kelasSet).length;
+    document.getElementById('dash-n-siswa').textContent = totalSiswa;
+
+    const box = document.getElementById('dash-ampu-list');
+    if (!list.length) {
+      box.innerHTML = '<p class="ampu-empty">Belum ada mapel &amp; kelas yang tercatat.<br>Pilih mata pelajaran dan kelas di tab <b>Smt 2</b> — otomatis muncul di sini.</p>';
+      return;
+    }
+
+    const curMapel = document.getElementById('mapel').value.trim().toUpperCase();
+    const grup = {};
+    list.forEach((a, idx) => { (grup[a.mapel] = grup[a.mapel] || []).push({ kelas: a.kelas, idx }); });
+
+    let html = '';
+    Object.keys(grup).sort((a, b) => a.localeCompare(b, 'id')).forEach(mapel => {
+      const items = grup[mapel].sort((a, b) => a.kelas.localeCompare(b.kelas, 'id', { numeric: true }));
+      html += '<div class="ampu-mapel"><div class="ampu-mapel-head"><span>📖 ' + escHtml_(namaMapelTampil_(mapel)) +
+              '</span><small>' + items.length + ' kelas</small></div><div class="ampu-kelas-grid">';
+      items.forEach(it => {
+        const pr = progressAmpu_(mapel, it.kelas);
+        const pct = n => pr.total ? Math.round(n / pr.total * 100) : 0;
+        const aktif = (mapel === curMapel && it.kelas === currentKelas) ? ' aktif' : '';
+        html += '<div class="ampu-kelas' + aktif + '" onclick="bukaAmpu(' + it.idx + ')" title="Buka nilai kelas ini">' +
+          '<button class="ampu-remove" title="Hapus dari daftar" onclick="event.stopPropagation(); hapusAmpu(' + it.idx + ')">✕</button>' +
+          '<div class="ampu-kelas-title">🏫 Kelas ' + escHtml_(it.kelas) + '</div>' +
+          '<div class="ampu-kelas-sub">' + pr.total + ' siswa' + (aktif ? ' • sedang dibuka' : '') + '</div>' +
+          '<div class="ampu-bar-row"><span class="lb">Smt 1</span><div class="ampu-bar"><i style="width:' + pct(pr.s1) + '%"></i></div><span class="nm">' + pr.s1 + '/' + pr.total + '</span></div>' +
+          '<div class="ampu-bar-row"><span class="lb">Smt 2</span><div class="ampu-bar"><i style="width:' + pct(pr.s2) + '%"></i></div><span class="nm">' + pr.s2 + '/' + pr.total + '</span></div>' +
+          '</div>';
+      });
+      html += '</div></div>';
+    });
+    box.innerHTML = html;
+  }
+
+  function bukaAmpu(idx) {
+    const a = (daftarAmpu || [])[idx];
+    if (!a) return;
+    if (!dbSiswa[a.kelas]) { toast('Kelas ' + a.kelas + ' tidak ditemukan di data siswa', 'error'); return; }
+    document.getElementById('mapel').value = namaMapelTampil_(a.mapel);
+    saveSesi();
+    updateDropdownKelas();
+    document.getElementById('kelas').value = a.kelas;
+    loadSiswa();
+    switchPage('input');
+  }
+
+  function hapusAmpu(idx) {
+    const a = (daftarAmpu || [])[idx];
+    if (!a) return;
+    if (!confirm('Hapus "' + namaMapelTampil_(a.mapel) + ' - Kelas ' + a.kelas + '" dari daftar pengampuan?\n\nNilai yang sudah diinput tidak ikut terhapus.')) return;
+    daftarAmpu.splice(idx, 1);
+    saveAmpu();
+    renderDashboard();
+  }
+
+  function tambahAmpu() {
+    switchPage('input');
+    const m = document.getElementById('mapel');
+    if (m) m.focus();
   }
 
   // ================================================================
@@ -1336,18 +1650,61 @@
       updateHeaderInfoBar();
     }
 
+    if (daftarAmpu === null) {
+      daftarAmpu = seedAmpuDariNilai_();
+      saveAmpu();
+    }
+    if (currentKelas) registerAmpu_(document.getElementById('mapel').value, currentKelas);
+    renderDashboard();
+
     updateAdminUI();
     fetchSiswaFromServer(false); // sinkron otomatis tiap app dibuka
+
+    // Sinkron otomatis: saat tab/app kembali dibuka, saat online lagi, dan tiap 30 detik
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        fetchSiswaFromServer(false);
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistration().then(r => { if (r) r.update(); }).catch(() => {});
+        }
+      }
+    });
+    window.addEventListener('online', () => fetchSiswaFromServer(false));
+    setInterval(() => {
+      if (document.visibilityState === 'visible' && navigator.onLine) fetchSiswaFromServer(false);
+    }, 30000);
   };
 
   // ================================================================
   // PAGE NAVIGATION
   // ================================================================
+  // ===== MENU DROPDOWN =====
+  function toggleMenu(e) {
+    if (e) e.stopPropagation();
+    const dd = document.getElementById('menu-dropdown');
+    const open = !dd.classList.contains('open');
+    dd.classList.toggle('open', open);
+    document.getElementById('menu-trigger').setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function closeMenu() {
+    const dd = document.getElementById('menu-dropdown');
+    if (dd) dd.classList.remove('open');
+    const t = document.getElementById('menu-trigger');
+    if (t) t.setAttribute('aria-expanded', 'false');
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.menu-wrap')) closeMenu();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
   function switchPage(p) {
     document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
     document.getElementById('page-' + p).classList.add('active');
-    document.querySelectorAll('.btn-header').forEach(b => b.classList.remove('active'));
-    document.getElementById('btn-tab-' + p).classList.add('active');
+    document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
+    const activeItem = document.getElementById('btn-tab-' + p);
+    activeItem.classList.add('active');
+    document.getElementById('menu-label').textContent = activeItem.querySelector('.mi-icon').textContent + ' ' + activeItem.lastChild.textContent.trim();
+    closeMenu();
 
     const selCard = document.getElementById('selector-card');
     if(selCard) selCard.style.display = (p === 'input' || p === 'smt1') ? '' : 'none';
@@ -1355,6 +1712,7 @@
     if(p === 'siswa') {
       updateAdminUI();
     }
+    if(p === 'dashboard') renderDashboard();
     if(p === 'smt1' && currentKelas) {
       const filterS1El = document.getElementById('siswa-filter-s1');
       renderTableS1(filterS1El ? filterS1El.value : 'all');
@@ -1443,7 +1801,15 @@
 
   function gantiMapel() {
     saveSesi();
-    if(currentKelas) loadSiswa();
+    if(currentKelas) {
+      loadSiswa();
+      registerAmpu_(document.getElementById('mapel').value, currentKelas);
+    }
+  }
+
+  function onKelasChange() {
+    loadSiswa();
+    registerAmpu_(document.getElementById('mapel').value, currentKelas);
   }
 
   function filterSiswa() {
@@ -2678,10 +3044,19 @@
   // PWA SERVICE WORKER REGISTRATION
   // ================================================================
   if ('serviceWorker' in navigator) {
+    const hadController_ = !!navigator.serviceWorker.controller;
+    let reloading_ = false;
+    // Saat versi baru service worker aktif, muat ulang sekali agar langsung memakai index.html terbaru
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadController_ || reloading_) return;
+      reloading_ = true;
+      location.reload();
+    });
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
+      navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
         .then(registration => {
           console.log('ServiceWorker terdaftar dengan sukses');
+          registration.update();
         })
         .catch(err => {
           console.error('ServiceWorker gagal mendaftar: ', err);
