@@ -593,6 +593,15 @@
     }
     .dash-name-input::placeholder { color:var(--text-3); font-weight:600; font-size:15px; }
     .dash-name-input:focus { border-bottom-color: var(--accent); }
+    .dash-import { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+    .dash-import-btn {
+      display:flex; flex-direction:column; align-items:center; gap:4px; padding:14px 10px;
+      border:2px dashed var(--accent); border-radius:12px; background:#fffaf0; cursor:pointer;
+      font-family:inherit; color:var(--primary); font-weight:700; font-size:13px; transition:all .15s;
+    }
+    .dash-import-btn:hover, .dash-import-btn:active { background:#faf5e6; transform:translateY(-1px); }
+    .dash-import-btn .ico { font-size:26px; }
+    .dash-import-btn small { font-size:11px; font-weight:500; color:var(--text-2); }
     .dash-summary { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin:10px 12px; }
     .dash-stat {
       background:var(--surface); border-radius:var(--radius); padding:12px 8px; text-align:center;
@@ -731,6 +740,22 @@
       <div class="dash-stat"><span class="val" id="dash-n-mapel">0</span><span class="lbl">Mata Pelajaran</span></div>
       <div class="dash-stat"><span class="val" id="dash-n-kelas">0</span><span class="lbl">Kelas</span></div>
       <div class="dash-stat"><span class="val" id="dash-n-siswa">0</span><span class="lbl">Total Siswa</span></div>
+    </div>
+
+    <div class="card" id="dash-import-card">
+      <div class="card-title">
+        <div class="icon">📥</div>
+        Impor Nilai dari Template Excel
+      </div>
+      <div class="dash-import">
+        <button class="dash-import-btn" onclick="showImportModalS1()">
+          <span class="ico">📗</span>Semester 1<small>NH 1–8, STS 1, SAS</small>
+        </button>
+        <button class="dash-import-btn" onclick="showImportModal()">
+          <span class="ico">📘</span>Semester 2<small>Rapor 1, NH, STS 2, SAS</small>
+        </button>
+      </div>
+      <p class="help-text" style="margin-top:10px">💡 Pilih semester, lalu pilih file Excel template yang sudah diisi. Mapel &amp; kelas otomatis tercatat di daftar bawah.</p>
     </div>
 
     <div class="card">
@@ -1267,6 +1292,69 @@
     return m + '_' + kelas + '_' + nama;
   }
 
+  // ================================================================
+  // PENCOCOKAN NAMA/KELAS TOLERAN (huruf besar-kecil, spasi ganda, tanda apostrof)
+  // Dipakai saat impor agar siswa yang sudah ada TIDAK dibuat dobel.
+  // ================================================================
+  function normNama_(s) {
+    return String(s == null ? '' : s).replace(/[\u2018\u2019\u02BC`\u00B4]/g, "'").replace(/\s+/g, ' ').trim().toUpperCase();
+  }
+  function normKelas_(s) {
+    return String(s == null ? '' : s).replace(/\s+/g, '').toUpperCase();
+  }
+  function cariKelasKey_(kelasRaw) {
+    const n = normKelas_(kelasRaw);
+    return Object.keys(dbSiswa).find(k => normKelas_(k) === n) || String(kelasRaw).trim().toUpperCase();
+  }
+  function cariSiswaDb_(kelasKey, namaRaw) {
+    const n = normNama_(namaRaw);
+    return (dbSiswa[kelasKey] || []).find(sw => normNama_(sw.nama) === n) || null;
+  }
+
+  // Perbaikan data lama yang terlanjur dobel akibat impor:
+  // - hapus siswa duplikat hasil impor (nisn '-') bila sudah ada siswa asli bernama sama
+  // - pindahkan nilai yang tersangkut di nama "dobel" ke siswa asli
+  function perbaikiDuplikatNama_() {
+    let ubah = false;
+    Object.keys(dbSiswa).forEach(kelas => {
+      const list = dbSiswa[kelas];
+      if (!Array.isArray(list)) return;
+      const peta = {};
+      list.forEach(sw => {
+        const n = normNama_(sw.nama);
+        if (!peta[n] || (peta[n].nisn === '-' && sw.nisn !== '-')) peta[n] = sw;
+      });
+      const bersih = list.filter(sw => peta[normNama_(sw.nama)] === sw || sw.nisn !== '-');
+      if (bersih.length !== list.length) { dbSiswa[kelas] = bersih; ubah = true; }
+
+      [[dataNilai, hitung], [dataNilaiS1, hitungS1]].forEach(([db, fnHitung]) => {
+        Object.keys(db).forEach(key => {
+          const idx = key.indexOf('_' + kelas + '_');
+          if (idx <= 0) return;
+          const nama = key.slice(idx + kelas.length + 2);
+          const c = peta[normNama_(nama)];
+          if (!c || c.nama === nama) return;
+          const target = key.slice(0, idx) + '_' + kelas + '_' + c.nama;
+          const src = db[key];
+          if (!db[target]) {
+            db[target] = src;
+          } else {
+            Object.keys(src).forEach(f => {
+              if (f === 'rata2' || f === 'rap2') return;
+              const kosong = db[target][f] === '' || db[target][f] == null;
+              if (kosong && src[f] !== '' && src[f] != null) db[target][f] = src[f];
+            });
+          }
+          delete db[key];
+          try { fnHitung(target); } catch(e) {}
+          ubah = true;
+        });
+      });
+    });
+    if (ubah) { saveSiswa(); saveNilai(); saveNilaiS1(); }
+    return ubah;
+  }
+
   function emptyNilai() {
     return { rap1:'', nh1:'', nh2:'', nh3:'', nh4:'', nh5:'', nh6:'', nh7:'', nh8:'', sts:'', rata2:'0.00', sas:'', rap2:'' };
   }
@@ -1328,6 +1416,7 @@
   }
 
   function applySiswaUpdate_() {
+    perbaikiDuplikatNama_();
     updateDropdownKelas();
     if (isEditingTable_()) { pendingRender_ = true; return; }
     refreshViews_();
@@ -2483,15 +2572,18 @@
             const rawKelas = row['Kelas'] || row['kelas'] || row['KELAS'] || row['Rombel'] || row['ROMBEL'] || '';
             const rawNama = row['Nama Siswa'] || row['Nama Lengkap'] || row['Nama'] || row['nama'] || row['NAMA'] || row['NAMA SISWA'] || '';
 
-            const k = String(rawKelas).trim().toUpperCase();
-            const nama = String(rawNama).trim().toUpperCase();
+            if(!String(rawKelas).trim() || !String(rawNama).trim()) return;
 
-            if(!k || !nama) return;
-
-            if(!dbSiswa[k]) dbSiswa[k] = [];
-            if(!dbSiswa[k].find(s => s.nama === nama)) {
-              dbSiswa[k].push({ nisn: '-', nama });
+            // Cocokkan dengan siswa yang sudah ada (toleran huruf/spasi); pakai nama aslinya
+            const k = cariKelasKey_(rawKelas);
+            let sw = cariSiswaDb_(k, rawNama);
+            if(!sw) {
+              if(!dbSiswa[k]) dbSiswa[k] = [];
+              sw = { nisn: '-', nama: String(rawNama).trim().toUpperCase() };
+              dbSiswa[k].push(sw);
             }
+            const nama = sw.nama;
+            registerAmpu_(mapel, k);
 
             const key = mapel + '_' + k + '_' + nama;
             if(!dataNilai[key]) dataNilai[key] = emptyNilai();
@@ -2533,6 +2625,7 @@
         toast(`✅ ${countSiswa} data berhasil diimpor`, 'success', 3000);
         fileInput.value = '';
         closeImportModal();
+        renderDashboardIfActive_();
 
         if(currentKelas && dbSiswa[currentKelas]) loadSiswa();
 
@@ -2611,15 +2704,18 @@
             const rawKelas = row['Kelas'] || row['kelas'] || row['KELAS'] || row['Rombel'] || row['ROMBEL'] || '';
             const rawNama = row['Nama Siswa'] || row['Nama Lengkap'] || row['Nama'] || row['nama'] || row['NAMA'] || row['NAMA SISWA'] || '';
 
-            const k = String(rawKelas).trim().toUpperCase();
-            const nama = String(rawNama).trim().toUpperCase();
+            if(!String(rawKelas).trim() || !String(rawNama).trim()) return;
 
-            if(!k || !nama) return;
-
-            if(!dbSiswa[k]) dbSiswa[k] = [];
-            if(!dbSiswa[k].find(s => s.nama === nama)) {
-              dbSiswa[k].push({ nisn: '-', nama });
+            // Cocokkan dengan siswa yang sudah ada (toleran huruf/spasi); pakai nama aslinya
+            const k = cariKelasKey_(rawKelas);
+            let sw = cariSiswaDb_(k, rawNama);
+            if(!sw) {
+              if(!dbSiswa[k]) dbSiswa[k] = [];
+              sw = { nisn: '-', nama: String(rawNama).trim().toUpperCase() };
+              dbSiswa[k].push(sw);
             }
+            const nama = sw.nama;
+            registerAmpu_(mapel, k);
 
             const key = mapel + '_' + k + '_' + nama;
             if(!dataNilaiS1[key]) dataNilaiS1[key] = emptyNilaiS1();
@@ -2657,6 +2753,7 @@
         toast(`✅ ${countSiswa} data Semester 1 berhasil diimpor`, 'success', 3000);
         fileInput.value = '';
         closeImportModalS1();
+        renderDashboardIfActive_();
 
         if(currentKelas && dbSiswa[currentKelas]) loadSiswa();
 
@@ -3039,6 +3136,9 @@
     localStorage.removeItem('almatuq_urutan_lokal');
     location.reload();
   }
+
+  // Bersihkan sisa duplikat dari impor sebelumnya
+  try { if (perbaikiDuplikatNama_() && typeof refreshViews_ === 'function') refreshViews_(); } catch(e) { console.error(e); }
 
   // ================================================================
   // PWA SERVICE WORKER REGISTRATION
