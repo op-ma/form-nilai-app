@@ -1,4 +1,4 @@
-const CACHE_NAME = 'almatuq-nilai-v2';
+const CACHE_NAME = 'almatuq-nilai-v3';
 const CORE_ASSETS = [
   './index.html',
   './manifest.json',
